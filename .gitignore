@@ -3,3 +3,6 @@ __pycache__/
 
 # misc
 .DS_Store
+
+# local db
+db/
