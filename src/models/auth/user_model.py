@@ -12,6 +12,7 @@ from models.base_model import BaseModel
 class User(BaseModel):
     __tablename__ = "user_tb"
 
-    username: Mapped[str] = mapped_column(String(255), nullable=False)
+    username: Mapped[str] = mapped_column(
+        String(255), nullable=False, unique=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     

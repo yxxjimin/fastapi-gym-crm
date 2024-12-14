@@ -2,6 +2,7 @@ import contextlib
 
 from fastapi import FastAPI
 
+from common import config
 from common.database import init_database
 
 
@@ -14,6 +15,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     lifespan=lifespan
 )
+
+config.add_routers(app)
 
 if __name__ == "__main__":
     import uvicorn
