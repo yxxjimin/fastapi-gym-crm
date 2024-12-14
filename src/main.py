@@ -2,14 +2,12 @@ import contextlib
 
 from fastapi import FastAPI
 
-from common.database import engine
-from models.base_model import Base
+from common.database import init_database
 
 
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    await init_database()
     yield
 
 

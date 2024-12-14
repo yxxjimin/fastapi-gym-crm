@@ -1,8 +1,11 @@
-from sqlalchemy.ext.asyncio import async_sessionmaker
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import (
+    async_sessionmaker,
+    AsyncSession,
+    create_async_engine
+)
 
 from common.settings import database_settings
+from models.base_model import Base
 
 
 engine = create_async_engine(
@@ -14,6 +17,11 @@ async_session = async_sessionmaker(
     bind=engine,
     class_=AsyncSession,
 )
+
+
+async def init_database():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 
 def transactional(func):
