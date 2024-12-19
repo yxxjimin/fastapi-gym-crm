@@ -12,8 +12,10 @@ from routers import auth_router
 
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("Application startup complete.")
     await init_database()
     yield
+    logger.info("Application shutdown complete.")
 
 
 logger = Logger.get_logger(__name__)
@@ -37,6 +39,10 @@ app = (
     .build()
 )
 
+
+@app.get("/healthcheck")
+async def healthcheck():
+    return {"status": "ok"}
 
 if __name__ == "__main__":
     import uvicorn
