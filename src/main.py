@@ -2,8 +2,10 @@ import contextlib
 
 from fastapi import FastAPI
 
-from common import config
+from common.builder import AppBuilder
 from common.database import init_database
+from common.logger import Logger
+from routers import auth_router
 
 
 @contextlib.asynccontextmanager
@@ -12,11 +14,16 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(
-    lifespan=lifespan
+logger = Logger.get_logger(__name__)
+
+app = (
+    AppBuilder(app=FastAPI(
+        lifespan=lifespan
+    ))
+    .add_router(auth_router.router)
+    .build()
 )
 
-config.add_routers(app)
 
 if __name__ == "__main__":
     import uvicorn
