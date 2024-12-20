@@ -5,6 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from common.builder import AppBuilder
 from common.database import init_database
+from common.exceptions import ServiceException
+from common.handlers import service_exception_handler
 from common.logger import Logger
 from common.middlewares import HTTPMiddleware
 from routers import auth_router
@@ -35,6 +37,7 @@ app = (
         HTTPMiddleware,
         logger=logger
     )
+    .add_exception_handler(ServiceException, service_exception_handler)
     .add_router(auth_router.router)
     .build()
 )
