@@ -1,12 +1,16 @@
 import contextlib
 
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
 from common.builder import AppBuilder
 from common.database import init_database
 from common.exceptions import ServiceException
-from common.handlers import service_exception_handler
+from common.handlers import (
+    request_validation_handler,
+    service_exception_handler,
+)
 from common.logger import Logger
 from common.middlewares import HTTPMiddleware
 from routers import auth_router
@@ -38,6 +42,7 @@ app = (
         logger=logger
     )
     .add_exception_handler(ServiceException, service_exception_handler)
+    .add_exception_handler(RequestValidationError, request_validation_handler)
     .add_router(auth_router.router)
     .build()
 )

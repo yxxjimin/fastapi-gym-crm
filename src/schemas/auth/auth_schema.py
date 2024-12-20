@@ -1,12 +1,16 @@
-from pydantic import BaseModel
+from pydantic import (
+    BaseModel, 
+    EmailStr,
+    Field,
+)
 
 
 class AuthSignupRequest(BaseModel):
     username: str
     password: str
     name: str
-    phone: str
-    email: str | None = None
+    phone: str = Field(pattern=r"^(\+82|0)10\d{8}$")
+    email: EmailStr | None = None
 
 
 class AuthTokenResponse(BaseModel):
