@@ -1,7 +1,9 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from common import errors as E
 from common.database import transactional
+from common.exceptions import ServiceException
 from models.auth.user_model import User
 
 
@@ -12,6 +14,9 @@ async def get_user(
 ) -> User:
     user = await session.get(User, uid)
     if user is None:
-        raise Exception  # FIXME: to ServiceException
+        raise ServiceException(
+            error=E.AuthError.USER_NOT_EXISTS,
+            params={"uid": uid}
+        )
     session.expunge(user)
     return user
