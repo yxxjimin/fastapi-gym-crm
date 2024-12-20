@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import (
+    Boolean,
     DateTime,
     func,
     Integer,
@@ -29,3 +30,4 @@ class BaseModel(Base):
         insert_default=func.current_timestamp(),
         onupdate=func.current_timestamp(),
     )
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
