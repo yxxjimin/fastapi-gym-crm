@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "fastapi-template"
+name = "fastapi-gym-crm"
 version = "0.1.0"
 description = ""
 authors = ["Jimin Yoo <jmy0819_@naver.com>"]
 readme = "README.md"
-packages = [{include = "*", from="src"}]
+packages = [{ from = "src", include = "*" }]
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -15,6 +15,10 @@ sqlalchemy = "^2.0.36"
 aiomysql = "^0.2.0"
 greenlet = "^3.1.1"
 cryptography = "^44.0.0"
+pyjwt = "^2.10.1"
+passlib = { version = "^1.7.4", extras = ["bcrypt"] }
+pydantic = { version = "^2.10.4", extras = ["email"] }
+bcrypt = "4.0.1"
 
 
 [build-system]

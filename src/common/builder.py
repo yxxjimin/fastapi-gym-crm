@@ -7,7 +7,7 @@ from fastapi import (
     Response
 )
 from starlette.types import ASGIApp
-from starlette.middleware import _MiddlewareClass
+from starlette.middleware import _MiddlewareFactory
 
 
 _P = ParamSpec("P")
@@ -19,7 +19,7 @@ class AppBuilder:
     
     def add_middleware(
         self, 
-        middleware: _MiddlewareClass[_P], 
+        middleware: _MiddlewareFactory[_P], 
         **kwargs: _P.kwargs
     ) -> Self:
         self.app.add_middleware(

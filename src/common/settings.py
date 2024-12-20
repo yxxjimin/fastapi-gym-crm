@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from fastapi.security import HTTPBearer
 from pydantic import computed_field, MySQLDsn
 from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings
@@ -16,6 +17,8 @@ class AppSettings(BaseSettings):
     APP_NAME: str
     APP_VERSION: str
     APP_DESCRIPTION: str
+
+    ACCESS_TOKEN_EXPIRE: int = 24 * 60 * 60
 
     class Config(Config):
         pass
@@ -46,3 +49,4 @@ class DatabaseSettings(BaseSettings):
 
 app_settings = AppSettings()
 database_settings = DatabaseSettings()
+security = HTTPBearer()
