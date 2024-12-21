@@ -13,7 +13,7 @@ from common.handlers import (
 )
 from common.logger import Logger
 from common.middlewares import HTTPMiddleware
-from routers import auth_router
+from routers.auth import auth_router
 
 
 @contextlib.asynccontextmanager

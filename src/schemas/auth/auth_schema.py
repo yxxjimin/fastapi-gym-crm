@@ -13,6 +13,11 @@ class AuthSignupRequest(BaseModel):
     email: EmailStr | None = None
 
 
+class AuthLoginRequest(BaseModel):
+    username: str
+    password: str
+
+
 class AuthTokenResponse(BaseModel):
     access_token: str
     refresh_token: str

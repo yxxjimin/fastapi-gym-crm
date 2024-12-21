@@ -1,7 +1,7 @@
 from common.errors import BaseError
 
 class ServiceException(Exception):
-    def __init__(self, error: BaseError, params: dict):
+    def __init__(self, error: BaseError, params: dict = {}):
         self.error = error
         self.params = params
 

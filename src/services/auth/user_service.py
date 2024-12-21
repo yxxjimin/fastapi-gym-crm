@@ -15,7 +15,7 @@ async def get_user(
     user = await session.get(User, uid)
     if user is None:
         raise ServiceException(
-            error=E.AuthError.USER_NOT_EXISTS,
+            error=E.AuthError.USERID_NOT_FOUND,
             params={"uid": uid}
         )
     session.expunge(user)

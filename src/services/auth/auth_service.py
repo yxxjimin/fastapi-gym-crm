@@ -10,6 +10,7 @@ from common.logger import Logger
 from common.settings import security
 from models.auth.user_model import User
 from schemas.auth.auth_schema import (
+    AuthLoginRequest,
     AuthSignupRequest,
     AuthTokenResponse
 )
@@ -55,6 +56,37 @@ async def signup(
     await session.refresh(user)
     logger.info(f"User created: {user.id=}")
 
+    return AuthTokenResponse(
+        access_token=token_utils.create_access_token(user.id),
+        refresh_token=f""
+    )
+
+
+@transactional
+async def login(
+    request: AuthLoginRequest,
+    session: AsyncSession,
+) -> AuthTokenResponse:
+    result = await session.execute(
+        select(User)
+        .where(
+            User.username == request.username,
+            User.is_active == True,
+        )
+    )
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise ServiceException(
+            E.AuthError.USERNAME_NOT_FOUND,
+            params={"username": request.username}
+        )
+    
+    if not _verify_password(request.password, user.password):
+        raise ServiceException(
+            E.AuthError.INVALID_PASSWORD,
+        )
+    
     return AuthTokenResponse(
         access_token=token_utils.create_access_token(user.id),
         refresh_token=f""

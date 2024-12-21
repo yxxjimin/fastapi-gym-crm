@@ -7,8 +7,9 @@ from common.logger import Logger
 from common.settings import security
 from models.auth.user_model import User
 from schemas.auth.auth_schema import (
+    AuthLoginRequest,
     AuthSignupRequest,
-    AuthTokenResponse
+    AuthTokenResponse,
 )
 from services.auth import auth_service
 
@@ -30,6 +31,17 @@ async def signup(
 ):
     logger.info(f"{request=}")
     return await auth_service.signup(request)
+
+
+@router.post(
+    path="/login",
+    response_model=AuthTokenResponse,
+)
+async def login(
+    request: AuthLoginRequest,
+):
+    logger.info(f"Login request for {request.username=}")
+    return await auth_service.login(request)
 
 
 @router.get(

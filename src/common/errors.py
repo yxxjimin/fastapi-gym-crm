@@ -13,5 +13,6 @@ class CommonError(BaseError):
 
 class AuthError(BaseError):
     EXISTING_USERNAME = ("00020001", "User [{username}] already exists")
-    INCORRECT_PASSWORD = ("00020002", "Password is incorrect")
-    USER_NOT_EXISTS = ("00020003", "User ID: [{uid}] does not exist")
+    INVALID_PASSWORD = ("00020002", "Password is incorrect")
+    USERID_NOT_FOUND = ("00020003", "User ID: [{uid}] not found")
+    USERNAME_NOT_FOUND = ("0002004", "Username: [{username}] not found")
