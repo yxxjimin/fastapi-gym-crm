@@ -4,10 +4,11 @@ from common import errors as E
 from common.database import transactional
 from common.exceptions import ServiceException
 from models.auth.user_model import User
+from repositories.auth.user_repository import UserRepository
 
 
 @transactional
-async def get_user(
+async def get_expunged_user(
     uid: int,
     session: AsyncSession,
 ) -> User:
@@ -31,7 +32,7 @@ async def _get_user_if_exists(
     uid: int,
     session: AsyncSession,
 ) -> User:
-    user = await session.get(User, uid)
+    user = await UserRepository.find_by_id(uid, session)
     if user is None:
         raise ServiceException(
             error=E.AuthError.USERID_NOT_FOUND,

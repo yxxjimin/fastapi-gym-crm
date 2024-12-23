@@ -1,6 +1,5 @@
 from fastapi import Request
 from passlib.context import CryptContext
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from common import errors as E
@@ -9,6 +8,7 @@ from common.exceptions import ServiceException
 from common.logger import Logger
 from common.settings import security
 from models.auth.user_model import User
+from repositories.auth.user_repository import UserRepository
 from schemas.auth.auth_schema import (
     AuthLoginRequest,
     AuthSignupRequest,
@@ -30,7 +30,7 @@ async def get_current_user(request: Request) -> User:
     payload = token_utils.decode_access_token(token.credentials)
     uid = payload.get("sub", None)
 
-    return await user_service.get_user(uid)
+    return await user_service.get_expunged_user(uid)
 
 
 @transactional
@@ -38,22 +38,17 @@ async def signup(
     request: AuthSignupRequest,
     session: AsyncSession
 ) -> AuthTokenResponse:
-    result = await session.execute(
-        select(User)
-        .where(User.username == request.username)
+    existing_user = await UserRepository.find_by_username(
+        request.username, session
     )
-    if result.scalar_one_or_none():
+    if existing_user:
         raise ServiceException(
             error=E.AuthError.EXISTING_USERNAME,
             params={"username": request.username}
         )
     
     request.password = _get_password_hash(request.password)
-    
-    user = User(**request.model_dump())
-    session.add(user)
-    await session.flush()
-    await session.refresh(user)
+    user = await UserRepository.save(User(**request.model_dump()), session)
     logger.info(f"User created: {user.id=}")
 
     return AuthTokenResponse(
@@ -67,14 +62,9 @@ async def login(
     request: AuthLoginRequest,
     session: AsyncSession,
 ) -> AuthTokenResponse:
-    result = await session.execute(
-        select(User)
-        .where(
-            User.username == request.username,
-            User.is_active == True,
-        )
+    user = await UserRepository.find_by_username(
+        request.username, session
     )
-    user = result.scalar_one_or_none()
 
     if not user:
         raise ServiceException(
